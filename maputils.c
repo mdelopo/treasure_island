@@ -1,4 +1,4 @@
-#include "maputlis.h"
+#include "maputils.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -18,9 +18,7 @@ void print_location(location* l)
 const char* getfield(char* line, int num)
 {
     const char* tok;
-    for (tok = strtok(line, ";");
-            tok && *tok;
-            tok = strtok(NULL, ";\n"))
+    for (tok = strtok(line, ";"); tok && *tok; tok = strtok(NULL, ";\n"))
     {
         if (!--num) return tok;
     }
@@ -34,13 +32,12 @@ void read_location_from_file(const char* filename, int y, int x, location* p_loc
     int j = 0;
     while (fgets(line, 1024, stream))
     {
-        if(++j!=y) continue;
+        if(j++ != y) continue;
         const char* next;
         int i = 0;
         while(1)
         {
-            i++;
-            if(i!=x) continue;
+            if(i++ != x) continue;
             char* tmp = strdup(line);
             next = getfield(tmp, i); // NOTE strtok clobbers tmp
             if(next == NULL) break;
@@ -51,4 +48,61 @@ void read_location_from_file(const char* filename, int y, int x, location* p_loc
             break;
         }
     }
+    fclose(stream);
+}
+
+location** allocate_memory_for_map(int y, int x)
+{
+    location **map_cell = malloc(y * sizeof(location*));
+
+    for (int i = 0; i < y; i++) {
+        map_cell[i] = malloc(x * sizeof(location));
+    }
+    return map_cell;
+}
+
+void free_memory_for_map(location **map, int y, int x)
+{
+    for (int i = 0; i < y; i++) {
+        free(map[i]);
+    }
+    free(map);
+}
+
+location** load_map_from_file(const char* filename)
+{
+    FILE* stream = fopen(filename, "r");
+    char line[1024];
+    file_rows = 0;
+    file_columns = 0;
+    while (fgets(line, 1024, stream)){
+        file_rows++;
+        const char* next;
+        int i = 0;
+        while(1)
+        {
+            i++;
+            char* tmp = strdup(line);
+            char* token = strtok(tmp, ";");
+            while (token != NULL) {
+                token = strtok(NULL, ";");
+                if(token != NULL) i++;
+            }
+            free(tmp);
+            break;
+        }
+        if (i > file_columns){
+            file_columns = i;
+        }
+    }
+    fclose(stream);
+
+    location **map = allocate_memory_for_map(file_rows, file_columns);
+
+    for (int i = 0; i < file_rows; i++) {
+        for (int j = 0; j < file_columns; j++) {
+            read_location_from_file(filename, i, j, &map[i][j]);
+        }
+    }
+    return map;
 }
