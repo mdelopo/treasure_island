@@ -11,7 +11,7 @@ void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box,
     int console_box_y_size = my;
     int map_box_start_x_coordinate = console_box_x_size;
     int map_box_x_size = mx - console_box_x_size;
-    int map_box_y_size = (int)(0.7*my);
+    int map_box_y_size = (int)(0.6*my);
     wresize(console_box, console_box_y_size, console_box_x_size);
     mvwin(console_box, 0, 0);
     wresize(console_window, console_box_y_size-2, console_box_x_size-2);

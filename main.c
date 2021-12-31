@@ -25,7 +25,7 @@ int main() {
     scrollok(console_window, TRUE);
     refresh();
     resize_window(console_box, console_window, map_box, map_window);
-    wprintw(console_window, "Calling newwin creates and returns a pointer to a new window with the given number of lines and columns. The upper left-hand corner of the window is at line begin_y, column begin_x. If either nlines or ncols is zero, they default to LINES - begin_y and COLS - begin_x. A new full-screen window is created by calling newwin(0,0,0,0).");
+    wprintw(console_window, " Press m to load map\n\n Press r to resize terminal\n\n Press c to clear map-window\n");
     wrefresh(console_window);
     //wprintw(map_window, "Screen window is created by calling newwin(0,0,0,0).");
     wrefresh(map_window);
@@ -40,6 +40,8 @@ int main() {
 
     //print_map(map_window, map);
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
     while(1){
     char input = getch();
         switch (input){
@@ -57,6 +59,7 @@ int main() {
                 break;
         }
     }
+#pragma clang diagnostic pop
 
     endwin();
 
