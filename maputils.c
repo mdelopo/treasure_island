@@ -3,16 +3,26 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <curses.h>
 
 
-void print_location(location* l)
+void print_location(WINDOW* console_window, location* l)
 {
-    printf("\"location\" struct:\n");
-    printf("Address: %p\n", l);
-    printf("Biome: %c\n", l->biome);
-    printf("Elements (%i): ", l->num_elements);
-    for(int i=0; i<l->num_elements; i++) printf("%c ", l->elements[i]);
-    printf("\n");
+    switch (l->biome) {
+        case 'F':
+            wprintw(console_window, "\n You are in the forest.\n");
+            break;
+        case 'B':
+            wprintw(console_window, "\n You are on the beach.\n");
+            break;
+        case 'M':
+            wprintw(console_window, "\n You are on the mountain.\n");
+            break;
+        case 'S':
+            wprintw(console_window, "\n You tried to swim in the sea.\n");
+            break;
+    }
+    wrefresh(console_window);
 }
 
 const char* getfield(char* line, int num)
@@ -73,10 +83,10 @@ location** load_map_from_file(const char* filename)
 {
     FILE* stream = fopen(filename, "r");
     char line[1024];
-    file_rows = 0;
-    file_columns = 0;
+    map_file_rows = 0;
+    map_file_columns = 0;
     while (fgets(line, 1024, stream)){
-        file_rows++;
+        map_file_rows++;
         const char* next;
         int i = 0;
         while(1)
@@ -91,16 +101,16 @@ location** load_map_from_file(const char* filename)
             free(tmp);
             break;
         }
-        if (i > file_columns){
-            file_columns = i;
+        if (i > map_file_columns){
+            map_file_columns = i;
         }
     }
     fclose(stream);
 
-    location **map = allocate_memory_for_map(file_rows, file_columns);
+    location **map = allocate_memory_for_map(map_file_rows, map_file_columns);
 
-    for (int i = 0; i < file_rows; i++) {
-        for (int j = 0; j < file_columns; j++) {
+    for (int i = 0; i < map_file_rows; i++) {
+        for (int j = 0; j < map_file_columns; j++) {
             read_location_from_file(filename, i, j, &map[i][j]);
         }
     }
