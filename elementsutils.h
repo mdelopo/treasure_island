@@ -7,7 +7,7 @@ typedef struct {
     char alias;
     char function;
     float function_amount;
-    char text[500];
+    char text[300];
 } element;
 
 void print_element(element* e);

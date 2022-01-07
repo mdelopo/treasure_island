@@ -2,9 +2,10 @@
 #include "maputils.h"
 
 #include <curses.h>
+#include <stdlib.h>
+
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 
 void print_element(element* element)
@@ -23,7 +24,7 @@ void read_elements_from_file(const char* filename, element* elements)
     int i = 0;
     while (fgets(line, 1024, stream))
     {
-        sscanf(line, "%c;%c;%f;%[^\n]s", &elements[i].alias, &elements[i].function, &elements[i].function_amount, elements[i].text);
+        sscanf(line, "%c;%c;%f;%[0-9a-zA-Z.,!?:| ]s", &elements[i].alias, &elements[i].function, &elements[i].function_amount, elements[i].text);
         i++;
     }
     fclose(stream);
