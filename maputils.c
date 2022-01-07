@@ -8,20 +8,22 @@
 
 void print_location(WINDOW* console_window, location* l)
 {
+    wprintw(console_window, "\n");
     switch (l->biome) {
         case 'F':
-            wprintw(console_window, "\n You are in the forest.\n");
+            wprintw(console_window, " You are in the forest.\n");
             break;
         case 'B':
-            wprintw(console_window, "\n You are on the beach.\n");
+            wprintw(console_window, " You are on the beach.\n");
             break;
         case 'M':
-            wprintw(console_window, "\n You are on the mountain.\n");
+            wprintw(console_window, " You are on the mountain.\n");
             break;
         case 'S':
-            wprintw(console_window, "\n You tried to swim in the sea.\n");
+            wprintw(console_window, " You tried to swim in the sea.\n");
             break;
     }
+    wprintw(console_window, "\n");
     wrefresh(console_window);
 }
 
