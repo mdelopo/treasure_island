@@ -1,36 +1,30 @@
 #include "maputils.h"
 #include "terminalutils.h"
 #include "elementsutils.h"
+#include "gameutils.h"
 #include <curses.h>
 #include <stdlib.h>
 
 int map_file_rows = 0, map_file_columns = 0;
 
-typedef struct {
-    char current_biome;
-    float health;
-    int current_x;
-    int next_x;
-    int current_y;
-    int next_y;
-    bool has_treasure;
-} _player;
+enum colours{ZERO, CYAN, GREEN, WHITE, YELLOW, BLACK, HEALTH};
 
 int main() {
     _player player;
-    player.current_x = 2;
-    player.current_y = 2;
+    restart:
+
+    initialize_player(&player);
     //location loc;
     //read_location_from_file("island_default.csv", 9, 4, &loc);
     //print_location(&loc);
-    load_elements_from_file("elements_default.csv");
+    element* elements = load_elements_from_file("elements_default.csv");
     location** map = load_map_from_file("island_default.csv");
     //printf("Rows: %d Columns: %d", file_rows, file_columns);
 
     initscr();
     start_color();
     curs_set(0);
-    //cbreak();
+    cbreak();
     noecho();
     keypad(stdscr, TRUE);
 
@@ -44,27 +38,27 @@ int main() {
     scrollok(console_window, TRUE);
     refresh();
     resize_window(console_box, console_window, map_box, map_window, status_box, status_window);
-    wprintw(console_window, " Press m to load map\n\n Press r to resize terminal\n\n Press c to clear map-window\n");
+    wprintw(console_window, " Press m to load map\n\n\n Press r to resize terminal\n\n\n Press c to clear map-window\n\n _________________________________\n\n");
     wrefresh(console_window);
 
-    init_pair(1,COLOR_WHITE, COLOR_CYAN);
-    init_pair(2,COLOR_WHITE, COLOR_GREEN);
-    init_pair(3,COLOR_BLACK, COLOR_WHITE);
-    init_pair(4,COLOR_BLACK, COLOR_YELLOW);
-    init_pair(5,COLOR_BLACK, COLOR_BLACK);
+    init_pair(CYAN,COLOR_WHITE, COLOR_CYAN); //1
+    init_pair(GREEN,COLOR_WHITE, COLOR_GREEN); //2
+    init_pair(WHITE,COLOR_BLACK, COLOR_WHITE); //3
+    init_pair(YELLOW,COLOR_BLACK, COLOR_YELLOW); //4
+    init_pair(BLACK,COLOR_BLACK, COLOR_BLACK); //5
+    init_pair(HEALTH,COLOR_BLACK, COLOR_RED); //6
 
-    wbkgd(map_window, COLOR_PAIR(1));
+    wbkgd(map_window, COLOR_PAIR(CYAN));
     wrefresh(map_window);
 
     print_map(map_window, map);
-    print_map_point(map_window, player.current_y, player.current_x,5);
+    print_map_point(map_window, player.current_y, player.current_x, BLACK);
     wrefresh(map_window);
+    print_health(status_window, player.health);
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
     while(1){
     int input = getch();
-    wprintw(status_window, "%c ", input);
-    wrefresh(status_window);
         switch (input){
             case 'r':
                 resize_window(console_box, console_window, map_box, map_window, status_box, status_window);
@@ -87,35 +81,49 @@ int main() {
                 switch (input) {
                     case 'b':
                     case KEY_UP:
-                        player.current_y--;
+                        player.next_y = player.current_y - 1;
                         break;
                     case 'd':
                     case KEY_LEFT:
-                        player.current_x--;
+                        player.next_x = player.current_x - 1;
                         break;
                     case 'n':
                     case KEY_DOWN:
-                        player.current_y++;
+                        player.next_y = player.current_y + 1;
                         break;
                     case 'a':
                     case KEY_RIGHT:
-                        player.current_x++;
+                        player.next_x = player.current_x + 1;
                         break;
                     default:
                         exit(EXIT_FAILURE);
                         break;
                 }
+                action(console_window,map,&player,elements);
+                print_health(status_window, player.health);
                 print_map(map_window, map);
                 print_map_point(map_window, player.current_y, player.current_x,5);
                 break;
+            case 't':
+                damage(console_window, &player, &elements[0]);
+                print_health(status_window, player.health);
             default:
                 break;
         }
         wrefresh(map_window);
-        print_location(console_window, &map[player.current_y][player.current_x]);
+        if(player.game_over==true){
+            wprintw(console_window, "\n Press enter to restart the game.\n");
+            wrefresh(console_window);
+            break;
+        }
     }
 #pragma clang diagnostic pop
-
+    while(1){
+        int input = getch();
+        if(input == '\n'){
+           goto restart;
+        }
+    }
     endwin();
 
     return 0;
