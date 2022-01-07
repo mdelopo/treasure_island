@@ -43,7 +43,7 @@ void print_map_point(WINDOW* map_window, int i, int j, int color_pair_num){
         for (int l = 0; l < 2; ++l) {
             wattron(map_window,COLOR_PAIR(color_pair_num));
             mvwaddch(map_window, i*2+k, j*2+l, 32);
-//            wrefresh(map_window);
+            //wrefresh(map_window);
             wattroff(map_window,COLOR_PAIR(color_pair_num));
         }
     }
@@ -76,4 +76,16 @@ void print_map(WINDOW* map_window, location **map){
 
         }
     }
+}
+
+void print_health(WINDOW* status_window, float health){
+    werase(status_window);
+    mvwprintw(status_window,0,1,"Health:");
+    wattron(status_window,COLOR_PAIR(6));
+    for (int i = 1; i <= 2*health; i++) {
+        mvwaddch(status_window, 1, i, 32);
+    }
+    wattroff(status_window,COLOR_PAIR(6));
+    mvwprintw(status_window,1,22,"%.0f%%", health*10);
+    wrefresh(status_window);
 }
