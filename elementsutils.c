@@ -11,9 +11,12 @@
 void print_element(element* element)
 {
     printf("\"element\" struct:\n");
+    printf("Name: %s\n", element->name);
     printf("Alias: %c\n", element->alias);
     printf("Function: %c\n", element->function);
     printf("Function Amount: %f\n", element->function_amount);
+    printf("inventory_effect: %s\n", element->inventory_effect);
+    printf("inventory_effect_amount: %f\n", element->inventory_effect_amount);
     printf("Text: %s\n", element->text);
 }
 
@@ -24,7 +27,7 @@ void read_elements_from_file(const char* filename, element* elements)
     int i = 0;
     while (fgets(line, 1024, stream))
     {
-        sscanf(line, "%c;%c;%f;%[0-9a-zA-Z.,!?:| ]s", &elements[i].alias, &elements[i].function, &elements[i].function_amount, elements[i].text);
+        sscanf(line, "%[0-9a-zA-Z.,!?:| ];%c;%c;%f;%[0-9a-zA-Z.,!?:|_ ];%f;%[0-9a-zA-Z.,!?:|_ ]", elements[i].name, &elements[i].alias, &elements[i].function, &elements[i].function_amount, elements[i].inventory_effect, &elements[i].inventory_effect_amount, elements[i].text);
         i++;
     }
     fclose(stream);

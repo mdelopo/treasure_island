@@ -4,9 +4,12 @@
 #include <curses.h>
 
 typedef struct {
+    char name[51];
     char alias;
     char function;
     float function_amount;
+    char inventory_effect[100];
+    float inventory_effect_amount;
     char text[300];
 } element;
 
