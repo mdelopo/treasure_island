@@ -20,6 +20,10 @@ int main() {
     element* elements = load_elements_from_file("elements_default.csv");
     location** map = load_map_from_file("island_default.csv");
     //printf("Rows: %d Columns: %d", file_rows, file_columns);
+    //printf("%c\n", map[player.current_y][player.current_x].elements[0]);
+    print_element(&elements[2]);
+    //return 0;
+
 
     initscr();
     start_color();
@@ -54,7 +58,7 @@ int main() {
     print_map(map_window, map);
     print_map_point(map_window, player.current_y, player.current_x, BLACK);
     wrefresh(map_window);
-    print_health(status_window, player.health);
+    print_player_status(status_window, &player);
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
     while(1){
@@ -62,6 +66,9 @@ int main() {
         switch (input){
             case 'r':
                 resize_window(console_box, console_window, map_box, map_window, status_box, status_window);
+                break;
+            case 's':
+                print_player_status(status_window, &player);
                 break;
             case 'c':
                 werase(map_window);
@@ -100,13 +107,13 @@ int main() {
                         break;
                 }
                 action(console_window,map,&player,elements);
-                print_health(status_window, player.health);
+                print_player_status(status_window, &player);
                 print_map(map_window, map);
                 print_map_point(map_window, player.current_y, player.current_x,5);
                 break;
             case 't':
                 damage(console_window, &player, &elements[0]);
-                print_health(status_window, player.health);
+                print_player_status(status_window, &player);
             default:
                 break;
         }
