@@ -2,10 +2,11 @@
 #define TREASURE_ISLAND_TERMINALUTILS_H
 #include <curses.h>
 #include "maputils.h"
+#include "gameutils.h"
 
 void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box, WINDOW* map_window, WINDOW* status_box, WINDOW* status_window);
 void print_map_point(WINDOW* map_window, int i, int j, int color_pair_num);
 void print_map(WINDOW* map_window, location **map);
 
-void print_health(WINDOW* status_window, float health);
+void print_player_status(WINDOW* status_window, _player* p_player);
 #endif //TREASURE_ISLAND_TERMINALUTILS_H

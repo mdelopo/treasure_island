@@ -1,5 +1,6 @@
 #include "terminalutils.h"
 #include "maputils.h"
+#include "gameutils.h"
 
 #include <curses.h>
 
@@ -78,14 +79,22 @@ void print_map(WINDOW* map_window, location **map){
     }
 }
 
-void print_health(WINDOW* status_window, float health){
+void print_player_status(WINDOW* status_window, _player* p_player){
     werase(status_window);
     mvwprintw(status_window,0,1,"Health:");
     wattron(status_window,COLOR_PAIR(6));
-    for (int i = 1; i <= 2*health; i++) {
+    for (int i = 1; i <= 2*p_player->health; i++) {
         mvwaddch(status_window, 1, i, 32);
     }
     wattroff(status_window,COLOR_PAIR(6));
-    mvwprintw(status_window,1,22,"%.0f%%", health*10);
+    mvwprintw(status_window,1,22,"%.0f%%", p_player->health*10);
+
+    wprintw(status_window,"\n\n Inventory:\n");
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        if(p_player->inventory[i]->name != NULL) {
+            wprintw(status_window, " %d. %s\n", i+1, p_player->inventory[i]->name);
+        }
+        else wprintw(status_window, "\n");
+    }
     wrefresh(status_window);
 }
