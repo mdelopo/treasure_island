@@ -4,6 +4,7 @@
 #include "elementsutils.h"
 #include "maputils.h"
 
+#define INVENTORY_SIZE 3
 
 typedef struct {
     char current_biome;
@@ -15,12 +16,17 @@ typedef struct {
     bool game_over;
     bool has_treasure;
     int shark_counter;
+    element* inventory[INVENTORY_SIZE];
 } _player;
 
 void initialize_player(_player* player);
 void action(WINDOW* console_window, location **map, _player* p_player, element* elements);
 
+void inventory(WINDOW* console_window, location **map, _player* p_player, element* p_element);
+
+float damage_reduction(_player* p_player);
 void damage(WINDOW* console_window, _player* p_player, element* p_element);
+
 void heal(WINDOW* console_window, _player* p_player, element* p_element);
 
 void death(WINDOW* console_window, _player* p_player);
