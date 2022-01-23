@@ -4,10 +4,14 @@
 #include "gameutils.h"
 #include <curses.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 int map_file_rows = 0, map_file_columns = 0;
 
 enum colours{ZERO, CYAN, GREEN, WHITE, YELLOW, BLACK, HEALTH};
+
+enum directions{UP, RIGHT, DOWN, LEFT};
+
 
 int main() {
     _player player;
@@ -21,8 +25,22 @@ int main() {
     location** map = load_map_from_file("island_default.csv");
     //printf("Rows: %d Columns: %d", file_rows, file_columns);
     //printf("%c\n", map[player.current_y][player.current_x].elements[0]);
-    print_element(&elements[2]);
-    //return 0;
+//    int count = 0;
+//
+//    for (int i = 0; i < 10000; ++i) {
+//        int rand = random_number_1_100();
+//        if(rand > 90){
+//            printf("rand >100\n");
+//            count++;
+//        }
+//        else if (rand == 0){
+//            printf("rand =0\n");
+//        }
+//    }
+//    printf("Count: %d\n", count);
+//
+//    print_element(&elements[2]);
+//    return 0;
 
 
     initscr();
@@ -88,19 +106,19 @@ int main() {
                 switch (input) {
                     case 'b':
                     case KEY_UP:
-                        player.next_y = player.current_y - 1;
-                        break;
-                    case 'd':
-                    case KEY_LEFT:
-                        player.next_x = player.current_x - 1;
-                        break;
-                    case 'n':
-                    case KEY_DOWN:
-                        player.next_y = player.current_y + 1;
+                        movement(&player, UP);
                         break;
                     case 'a':
                     case KEY_RIGHT:
-                        player.next_x = player.current_x + 1;
+                        movement(&player, RIGHT);
+                        break;
+                    case 'n':
+                    case KEY_DOWN:
+                        movement(&player, DOWN);
+                        break;
+                    case 'd':
+                    case KEY_LEFT:
+                        movement(&player, LEFT);
                         break;
                     default:
                         exit(EXIT_FAILURE);

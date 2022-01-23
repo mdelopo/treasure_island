@@ -34,8 +34,36 @@ int shark_encounter(WINDOW* console_window,  _player* p_player){
     }
 }
 
-void movement(WINDOW* console_window,WINDOW* map_window, location **map, _player* p_player, element* elements){
-
+void movement(_player* p_player, int direction){
+    enum directions{UP, RIGHT, DOWN, LEFT};
+    int prob_result_accurate = probability_1_100(80);
+    int prob_result_offset_left0_right1 = probability_1_100(50);
+    switch (direction){
+        case UP:
+            p_player->next_y = p_player->current_y - 1;
+            if(prob_result_accurate) break;
+            if (prob_result_offset_left0_right1) p_player->next_x = p_player->current_x + 1;
+            else p_player->next_x = p_player->current_x - 1;
+            break;
+        case RIGHT:
+            p_player->next_x = p_player->current_x + 1;
+            if(prob_result_accurate) break;
+            if (prob_result_offset_left0_right1) p_player->next_y = p_player->current_y + 1;
+            else p_player->next_y = p_player->current_y - 1;
+            break;
+        case DOWN:
+            p_player->next_y = p_player->current_y + 1;
+            if(prob_result_accurate) break;
+            if (prob_result_offset_left0_right1) p_player->next_x = p_player->current_x - 1;
+            else p_player->next_x = p_player->current_x + 1;
+            break;
+        case LEFT:
+            p_player->next_x = p_player->current_x - 1;
+            if(prob_result_accurate) break;
+            if (prob_result_offset_left0_right1) p_player->next_y = p_player->current_y - 1;
+            else p_player->next_y = p_player->current_y + 1;
+            break;
+    }
 }
 
 void action(WINDOW* console_window, location **map, _player* p_player, element* elements){
