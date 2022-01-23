@@ -24,6 +24,7 @@ int probability_1_100(int p);
 
 int shark_encounter(WINDOW* console_window, _player* p_player);
 
+float compass_navigation_accuracy_increase(_player* p_player);
 void movement(_player* p_player, int direction);
 void action(WINDOW* console_window, location **map, _player* p_player, element* elements);
 

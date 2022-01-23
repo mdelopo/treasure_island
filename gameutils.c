@@ -41,10 +41,20 @@ int shark_encounter(WINDOW* console_window,  _player* p_player){
         death(console_window, p_player);
     }
 }
+float compass_navigation_accuracy_increase(_player* p_player){
+    float navigation_accuracy_increase_value = 1;
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        if(p_player->inventory[i]!=NULL && strcmp(p_player->inventory[i]->inventory_effect, "navigation_accuracy_increase") == 0){
+            navigation_accuracy_increase_value = navigation_accuracy_increase_value + p_player->inventory[i]->inventory_effect_amount;
+        }
+    }
+    if(navigation_accuracy_increase_value<0) navigation_accuracy_increase_value=0;
+    return navigation_accuracy_increase_value;
+}
 
 void movement(_player* p_player, int direction){
     enum directions{UP, RIGHT, DOWN, LEFT};
-    int prob_result_accurate = probability_1_100(80);
+    int prob_result_accurate = probability_1_100(80*compass_navigation_accuracy_increase(p_player));
     int prob_result_offset_left0_right1 = probability_1_100(50);
     switch (direction){
         case UP:
