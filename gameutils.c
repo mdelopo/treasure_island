@@ -4,6 +4,7 @@
 #include <curses.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 void initialize_player(_player* player){
     player->current_x = 2;
@@ -16,6 +17,25 @@ void initialize_player(_player* player){
     for (int i = 0; i < INVENTORY_SIZE; ++i) {
         player->inventory[i] = NULL;
     }
+    srand(time(0));
+}
+int probability_1_100(int p){
+    int num = rand()%(100+1);
+    if (num <= p) return 1;
+    else return 0;
+}
+
+int shark_encounter(WINDOW* console_window,  _player* p_player){
+    int sharks_appetite[3] = {20, 70, 100};
+    int result = probability_1_100(sharks_appetite[p_player->shark_counter - 1]);
+    if(result == 1){
+        p_player->health = 0;
+        death(console_window, p_player);
+    }
+}
+
+void movement(WINDOW* console_window,WINDOW* map_window, location **map, _player* p_player, element* elements){
+
 }
 
 void action(WINDOW* console_window, location **map, _player* p_player, element* elements){
@@ -26,8 +46,12 @@ void action(WINDOW* console_window, location **map, _player* p_player, element* 
     }
 
     if (elements[i].alias == 's'){
-        wprintw(console_window, "\n %s\n", elements[i].text);
         p_player->shark_counter++;
+        wprintw(console_window, "\n %s\n", elements[i].text);
+        shark_encounter(console_window, p_player);
+        if(p_player->game_over == false){
+            wprintw(console_window, " You managed to get back to shore.\n");
+        }
         p_player->next_x = p_player->current_x;
         p_player->next_y = p_player->current_y;
     }

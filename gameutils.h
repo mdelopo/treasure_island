@@ -20,6 +20,11 @@ typedef struct {
 } _player;
 
 void initialize_player(_player* player);
+int probability_1_100(int p);
+
+int shark_encounter(WINDOW* console_window, _player* p_player);
+void movement(WINDOW* console_window,WINDOW* map_window, location **map, _player* p_player, element* elements);
+
 void action(WINDOW* console_window, location **map, _player* p_player, element* elements);
 
 void inventory(WINDOW* console_window, location **map, _player* p_player, element* p_element);
