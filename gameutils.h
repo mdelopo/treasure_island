@@ -19,7 +19,7 @@ typedef struct {
     element* inventory[INVENTORY_SIZE];
 } _player;
 
-void initialize_player(_player* player);
+void initialize_player(_player* player, location** map);
 int probability_1_100(int p);
 
 int shark_encounter(WINDOW* console_window, _player* p_player);

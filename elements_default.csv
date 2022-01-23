@@ -4,3 +4,4 @@ knife;k;i;0;damage_reduction;0.2;You found a knife. It may help you survive in t
 compass;c;i;0;navigation_accuracy_increase;0.2;You found an old compass. It will help you navigate.
 shark;s;n;0; ;0;You tried to swim in the sea, but a shark attacked you!
 treasure;t;w;0; ;0;You found the treasure!
+spawnpoint;@; ;0; ;0;Player's spawnpoint

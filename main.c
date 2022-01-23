@@ -5,6 +5,8 @@
 #include <curses.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
 
 int map_file_rows = 0, map_file_columns = 0;
 
@@ -12,35 +14,39 @@ enum colours{ZERO, CYAN, GREEN, WHITE, YELLOW, BLACK, HEALTH};
 
 enum directions{UP, RIGHT, DOWN, LEFT};
 
+char default_map_filename[] = "island_example.csv";
+char default_elements_filename[] = "elements_default.csv";
+
+char map_filename[1000];
+char elements_filename[1000];
+
+//void get_filenames_from_user(char* default_map_filename, char* p_map_filename, char* p_elements_filename) {
+//    char temp_map_filename[1000];
+//    char temp_elements_filename[1000];
+//
+//    printf("Type the filename of the map-file and press ENTER. To use the default map press ENTER.\n");
+//    scanf("%[^\n]s", temp_map_filename);
+//    if (strcmp(temp_map_filename, "\n") == 0) strcpy(p_map_filename, "island_default.csv");
+//    else strcpy(p_map_filename, temp_map_filename);
+//
+//    printf("Type the filename of the elements-file and press ENTER. To use the default elements press ENTER.\n");
+//    scanf("%[^\n]s", temp_elements_filename);
+//    if(strcmp(temp_elements_filename, "\n")!=0) strcpy(p_elements_filename, "elements_default.csv");
+//    else strcpy(p_elements_filename, temp_elements_filename);
+//}
+//}
 
 int main() {
-    _player player;
-    restart:
+    //get_filenames_from_user(default_map_filename, map_filename, elements_filename);
 
-    initialize_player(&player);
-    //location loc;
-    //read_location_from_file("island_default.csv", 9, 4, &loc);
-    //print_location(&loc);
-    element* elements = load_elements_from_file("elements_default.csv");
-    location** map = load_map_from_file("island_default.csv");
-    //printf("Rows: %d Columns: %d", file_rows, file_columns);
-    //printf("%c\n", map[player.current_y][player.current_x].elements[0]);
-//    int count = 0;
-//
-//    for (int i = 0; i < 10000; ++i) {
-//        int rand = random_number_1_100();
-//        if(rand > 90){
-//            printf("rand >100\n");
-//            count++;
-//        }
-//        else if (rand == 0){
-//            printf("rand =0\n");
-//        }
-//    }
-//    printf("Count: %d\n", count);
-//
-//    print_element(&elements[2]);
-//    return 0;
+    _player player;
+    restart: ;
+
+    element* elements = load_elements_from_file(default_elements_filename);
+    location** map = load_map_from_file(default_map_filename);
+    initialize_player(&player, map);
+    
+    //return 0;
 
 
     initscr();
@@ -146,7 +152,7 @@ int main() {
     while(1){
         int input = getch();
         if(input == '\n'){
-           goto restart;
+            goto restart;
         }
     }
     endwin();

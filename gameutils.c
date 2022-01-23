@@ -6,9 +6,17 @@
 #include <string.h>
 #include <time.h>
 
-void initialize_player(_player* player){
+void initialize_player(_player* player, location** map){
     player->current_x = 2;
     player->current_y = 2;
+    for(int x = 0; x<map_file_columns; x++){
+        for(int y = 0; y<map_file_rows; y++){
+            if(map[y][x].elements[0]=='@'){
+                player->current_x = x;
+                player->current_y = y;
+            }
+        }
+    }
     player->next_x = player->current_x;
     player->next_y = player->current_y;
     player->health = 10;
@@ -96,9 +104,7 @@ void action(WINDOW* console_window, location **map, _player* p_player, element* 
     else if (elements[i].function == 'i'){
         inventory(console_window, map, p_player, &elements[i]);
     }
-    else{
-        wprintw(console_window, " %s", elements[i].text);
-    }
+
     p_player->current_x = p_player->next_x;
     p_player->current_y = p_player->next_y;
     if(p_player->game_over == false) {

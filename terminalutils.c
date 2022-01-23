@@ -40,14 +40,14 @@ void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box,
 }
 
 void print_map_point(WINDOW* map_window, int i, int j, int color_pair_num){
-    for (int k = 0; k < 2; ++k) {
+    //for (int k = 0; k < 2; ++k) {
         for (int l = 0; l < 2; ++l) {
             wattron(map_window,COLOR_PAIR(color_pair_num));
-            mvwaddch(map_window, i*2+k, j*2+l, 32);
+            mvwaddch(map_window, i/**2+k*/, j*2+l, 32);
             //wrefresh(map_window);
             wattroff(map_window,COLOR_PAIR(color_pair_num));
         }
-    }
+   // }
 }
 void print_map(WINDOW* map_window, location **map){
     wclear(map_window);
