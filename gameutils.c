@@ -12,6 +12,7 @@ char* user_select_map_filename(){
     DIR *d;
     struct dirent *dirs[100];
     d = opendir("./islands");
+    printf("\nType the number of the map-file you want to load and press ENTER. To use the default map type 0.\n");
     int count = 1;
     if (d) {
         while ((dirs[count] = readdir(d)) != NULL) {
@@ -26,9 +27,7 @@ char* user_select_map_filename(){
         closedir(d);
     }
     count--;
-    printf("%d\n", count);
     int input_load_map = 0;
-    printf("Type the number of the map-file you want to load and press ENTER. To use the default map type 0.\n");
     scanf("%d", &input_load_map);
     if(input_load_map == 0){
         char* map_filename = strdup("./islands/island_default.csv");
@@ -42,6 +41,45 @@ char* user_select_map_filename(){
         strcat(map_filename, dirs[input_load_map]->d_name);
         printf("Loading %s...\n", map_filename);
         return map_filename;
+    }
+    else{
+        printf("Item not found. Please restart and try again.\n");
+        exit(0);
+    }
+}
+char* user_select_elements_filename(){
+    DIR *d;
+    struct dirent *dirs[100];
+    d = opendir("./elements");
+    printf("\nType the number of the elements-file you want to load and press ENTER. To use the default elements-config-file type 0.\n");
+    int count = 1;
+    if (d) {
+        while ((dirs[count] = readdir(d)) != NULL) {
+            if (strcmp(dirs[count]->d_name, "..") != 0 && strcmp(dirs[count]->d_name, ".") != 0) {
+                printf("%d %s\n", count, dirs[count]->d_name);
+            }
+            else{
+                count--;
+            }
+            count++;
+        }
+        closedir(d);
+    }
+    count--;
+    int input_load_elements = 0;
+    scanf("%d", &input_load_elements);
+    if(input_load_elements == 0){
+        char* elements_filename = strdup("./elements/elements_default.csv");
+        printf("Loading %s...\n", elements_filename);
+        return elements_filename;
+    }
+    else if(input_load_elements>0 && input_load_elements<=count){
+        char* elements_folder = "elements/";
+        char* elements_filename = malloc(strlen(elements_folder)+strlen(dirs[input_load_elements]->d_name)+1);
+        strcpy(elements_filename, elements_folder);
+        strcat(elements_filename, dirs[input_load_elements]->d_name);
+        printf("Loading %s...\n", elements_filename);
+        return elements_filename;
     }
     else{
         printf("Item not found. Please restart and try again.\n");

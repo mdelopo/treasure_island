@@ -19,36 +19,15 @@ enum directions {
     UP, RIGHT, DOWN, LEFT
 };
 
-char default_elements_filename[] = "elements_default.csv";
-
-char elements_filename[1000];
-
-//void get_filenames_from_user(char* default_map_filename, char* p_map_filename, char* p_elements_filename) {
-//    char temp_map_filename[1000];
-//    char temp_elements_filename[1000];
-//
-//    printf("Type the filename of the map-file and press ENTER. To use the default map press ENTER.\n");
-//    scanf("%[^\n]s", temp_map_filename);
-//    if (strcmp(temp_map_filename, "\n") == 0) strcpy(p_map_filename, "island_default.csv");
-//    else strcpy(p_map_filename, temp_map_filename);
-//
-//    printf("Type the filename of the elements-file and press ENTER. To use the default elements press ENTER.\n");
-//    scanf("%[^\n]s", temp_elements_filename);
-//    if(strcmp(temp_elements_filename, "\n")!=0) strcpy(p_elements_filename, "elements_default.csv");
-//    else strcpy(p_elements_filename, temp_elements_filename);
-//}
-//}
-
 int main() {
-    //get_filenames_from_user(default_map_filename, map_filename, elements_filename);
 
     _player player;
+    char* map_filename = user_select_map_filename();
+    char* elements_filename = user_select_elements_filename();
     restart:;
+    location **map = load_map_from_file(map_filename);
+    element *elements = load_elements_from_file(elements_filename);
 
-
-
-    element *elements = load_elements_from_file(default_elements_filename);
-    location **map = load_map_from_file(user_select_map_filename());
     initialize_player(&player, map);
     //return 0;
 
@@ -156,10 +135,10 @@ int main() {
     while (1) {
         int input = getch();
         if (input == '\n') {
+            endwin();
             goto restart;
         }
     }
-    endwin();
 
     return 0;
 }

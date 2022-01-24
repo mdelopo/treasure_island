@@ -20,6 +20,7 @@ typedef struct {
 } _player;
 
 char* user_select_map_filename();
+char* user_select_elements_filename();
 
 void initialize_player(_player* player, location** map);
 int probability_1_100(int p);
