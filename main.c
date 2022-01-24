@@ -48,7 +48,7 @@ int main() {
 
     scrollok(console_window, TRUE);
     refresh();
-    resize_window(console_box, console_window, map_box, map_window, status_box, status_window);
+    resize_window(console_box, console_window, map_box, map_window, status_box, status_window, map);
     wprintw(console_window, " Press m to load map\n\n\n Press r to resize terminal\n\n\n Press c to clear map-window\n\n _________________________________\n\n");
     wrefresh(console_window);
 
@@ -72,7 +72,7 @@ int main() {
         int input = getch();
         switch (input) {
             case 'r':
-                resize_window(console_box, console_window, map_box, map_window, status_box, status_window);
+                resize_window(console_box, console_window, map_box, map_window, status_box, status_window, map);
                 break;
             case 's':
                 print_player_status(status_window, &player);
@@ -126,7 +126,7 @@ int main() {
         }
         wrefresh(map_window);
         if (player.game_over == true) {
-            wprintw(console_window, "\n Press enter to restart the game.\n");
+            wprintw(console_window, "\n Press ENTER to restart the game.\n");
             wrefresh(console_window);
             break;
         }
@@ -135,7 +135,7 @@ int main() {
     while (1) {
         int input = getch();
         if (input == '\n') {
-            endwin();
+            //endwin();
             goto restart;
         }
     }
