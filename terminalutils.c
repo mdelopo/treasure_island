@@ -5,6 +5,10 @@
 #include <curses.h>
 
 void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box, WINDOW* map_window, WINDOW* status_box, WINDOW* status_window, location **map){
+    /*Η συνάρτηση επανακαθορίζει τα μεγέθη των παραθύρων και επαναεκτυπώνει τον χάρτη χρησιμοποιώντας την print_map. Δέχεται ως όρισμα τους pointers όλων των
+     * παραθύρων και τον χάρτη.
+     * Για να θέσει τα σωστά μεγέθη στα παράθυρα, παίρνει το μέγεθος του terminal, χρησιμοποιώντας την getmaxyx, και έπειτα εφαρμόζει προκαθορισμένες αναλογίες
+     * για να βρει το σωστό μέγεθος και θέση των παραθύρων.*/
     clear();
     int mx, my;
     getmaxyx(stdscr, my, mx);
@@ -41,9 +45,10 @@ void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box,
     wrefresh(map_window);
 }
 
-void print_map_point(WINDOW* map_window, int i, int j, int color_pair_num){
+void print_map_point(WINDOW* map_window, int i, int j, int color_pair_num){ /*Η συνάρτηση εκτυπώνει στο map-window ένα σημείο (δηλαδή ένα χαρακτήρα space με background χρώμα) στις
+ * συντεταγμένες που της δίνεται και με το χρώμα που της δίνεται.*/
     //for (int k = 0; k < 2; ++k) {
-        for (int l = 0; l < 2; ++l) {
+        for (int l = 0; l < 2; ++l) { /*Στον οριζόντιο άξονα τυπώνω δύο χαρακτήρες για να είναι πιο ωραίο το σχήμα του σημείου.*/
             wattron(map_window,COLOR_PAIR(color_pair_num));
             mvwaddch(map_window, i/**2+k*/, j*2+l, 32);
             //wrefresh(map_window);
@@ -51,7 +56,9 @@ void print_map_point(WINDOW* map_window, int i, int j, int color_pair_num){
         }
    // }
 }
-void print_map(WINDOW* map_window, location **map){
+void print_map(WINDOW* map_window, location **map){ /*Η συνάρτηση εκτυπώνει στο map-window τον χάρτη που έχει φορτωθεί στη μνήμη. Δέχεται ως όρισμα τον pointer
+ * του map-window και τον pointer του χάρτη. Η συνάρτηση σκανάρει κάθε location struct στο διπλό array (array μέσα σε array), διαβάζει το biome και καλεί την συνάρτηση print_map_point
+ * εκτυπώνοντας το ανάλογο χρώμα, δηλαδή Παραλία=Κίτρινο, Δάσος=Πράσινο, Θάλασσα=Μπλε, Βουνό=Γκρι. Έτσι σχηματίζεται κομμάτι-κομμάτι ολόκληρος ο χάρτης.*/
     wclear(map_window);
     int color_pair_num;
     for (int i = 0; i < map_file_rows; i++) {
@@ -81,7 +88,8 @@ void print_map(WINDOW* map_window, location **map){
     }
 }
 
-void print_player_status(WINDOW* status_window, _player* p_player){
+void print_player_status(WINDOW* status_window, _player* p_player){ /*Η συνάρτηση προβάλει την κατάσταση του παίκτη, δηλαδή το healthbar και το inventory, στο status-window του terminal.
+ * Δέχεται ως όρισμα τον pointer του status-window και τον pointer του player.*/
     werase(status_window);
     mvwprintw(status_window,0,1,"Health:");
     wattron(status_window,COLOR_PAIR(6));
