@@ -4,7 +4,7 @@
 
 #include <curses.h>
 
-void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box, WINDOW* map_window, WINDOW* status_box, WINDOW* status_window){
+void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box, WINDOW* map_window, WINDOW* status_box, WINDOW* status_window, location **map){
     clear();
     int mx, my;
     getmaxyx(stdscr, my, mx);
@@ -37,6 +37,8 @@ void resize_window(WINDOW* console_box, WINDOW* console_window, WINDOW* map_box,
     wrefresh(map_window);
     wrefresh(status_box);
     wrefresh(status_window);
+    print_map(map_window, map);
+    wrefresh(map_window);
 }
 
 void print_map_point(WINDOW* map_window, int i, int j, int color_pair_num){
