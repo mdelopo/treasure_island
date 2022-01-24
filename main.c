@@ -20,7 +20,7 @@ enum directions {
 };
 
 int main() {
-
+    system("@cls||clear");
     _player player;
     char* map_filename = user_select_map_filename();
     char* elements_filename = user_select_elements_filename();
