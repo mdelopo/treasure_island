@@ -8,16 +8,19 @@
 #include <string.h>
 
 
+
 int map_file_rows = 0, map_file_columns = 0;
 
-enum colours{ZERO, CYAN, GREEN, WHITE, YELLOW, BLACK, HEALTH};
+enum colours {
+    ZERO, CYAN, GREEN, WHITE, YELLOW, BLACK, HEALTH
+};
 
-enum directions{UP, RIGHT, DOWN, LEFT};
+enum directions {
+    UP, RIGHT, DOWN, LEFT
+};
 
-char default_map_filename[] = "island_example.csv";
 char default_elements_filename[] = "elements_default.csv";
 
-char map_filename[1000];
 char elements_filename[1000];
 
 //void get_filenames_from_user(char* default_map_filename, char* p_map_filename, char* p_elements_filename) {
@@ -40,12 +43,13 @@ int main() {
     //get_filenames_from_user(default_map_filename, map_filename, elements_filename);
 
     _player player;
-    restart: ;
+    restart:;
 
-    element* elements = load_elements_from_file(default_elements_filename);
-    location** map = load_map_from_file(default_map_filename);
+
+
+    element *elements = load_elements_from_file(default_elements_filename);
+    location **map = load_map_from_file(user_select_map_filename());
     initialize_player(&player, map);
-    
     //return 0;
 
 
@@ -69,12 +73,12 @@ int main() {
     wprintw(console_window, " Press m to load map\n\n\n Press r to resize terminal\n\n\n Press c to clear map-window\n\n _________________________________\n\n");
     wrefresh(console_window);
 
-    init_pair(CYAN,COLOR_WHITE, COLOR_CYAN); //1
-    init_pair(GREEN,COLOR_WHITE, COLOR_GREEN); //2
-    init_pair(WHITE,COLOR_BLACK, COLOR_WHITE); //3
-    init_pair(YELLOW,COLOR_BLACK, COLOR_YELLOW); //4
-    init_pair(BLACK,COLOR_BLACK, COLOR_BLACK); //5
-    init_pair(HEALTH,COLOR_BLACK, COLOR_RED); //6
+    init_pair(CYAN, COLOR_WHITE, COLOR_CYAN); //1
+    init_pair(GREEN, COLOR_WHITE, COLOR_GREEN); //2
+    init_pair(WHITE, COLOR_BLACK, COLOR_WHITE); //3
+    init_pair(YELLOW, COLOR_BLACK, COLOR_YELLOW); //4
+    init_pair(BLACK, COLOR_BLACK, COLOR_BLACK); //5
+    init_pair(HEALTH, COLOR_BLACK, COLOR_RED); //6
 
     wbkgd(map_window, COLOR_PAIR(CYAN));
     wrefresh(map_window);
@@ -85,9 +89,9 @@ int main() {
     print_player_status(status_window, &player);
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
-    while(1){
-    int input = getch();
-        switch (input){
+    while (1) {
+        int input = getch();
+        switch (input) {
             case 'r':
                 resize_window(console_box, console_window, map_box, map_window, status_box, status_window);
                 break;
@@ -130,10 +134,10 @@ int main() {
                         exit(EXIT_FAILURE);
                         break;
                 }
-                action(console_window,map,&player,elements);
+                action(console_window, map, &player, elements);
                 print_player_status(status_window, &player);
                 print_map(map_window, map);
-                print_map_point(map_window, player.current_y, player.current_x,5);
+                print_map_point(map_window, player.current_y, player.current_x, 5);
                 break;
             case 't':
                 damage(console_window, &player, &elements[0]);
@@ -142,16 +146,16 @@ int main() {
                 break;
         }
         wrefresh(map_window);
-        if(player.game_over==true){
+        if (player.game_over == true) {
             wprintw(console_window, "\n Press enter to restart the game.\n");
             wrefresh(console_window);
             break;
         }
     }
 #pragma clang diagnostic pop
-    while(1){
+    while (1) {
         int input = getch();
-        if(input == '\n'){
+        if (input == '\n') {
             goto restart;
         }
     }

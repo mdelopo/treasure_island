@@ -5,6 +5,49 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <dirent.h>
+
+
+char* user_select_map_filename(){
+    DIR *d;
+    struct dirent *dirs[100];
+    d = opendir("./islands");
+    int count = 1;
+    if (d) {
+        while ((dirs[count] = readdir(d)) != NULL) {
+            if (strcmp(dirs[count]->d_name, "..") != 0 && strcmp(dirs[count]->d_name, ".") != 0) {
+                printf("%d %s\n", count, dirs[count]->d_name);
+            }
+            else{
+                count--;
+            }
+            count++;
+        }
+        closedir(d);
+    }
+    count--;
+    printf("%d\n", count);
+    int input_load_map = 0;
+    printf("Type the number of the map-file you want to load and press ENTER. To use the default map type 0.\n");
+    scanf("%d", &input_load_map);
+    if(input_load_map == 0){
+        char* map_filename = strdup("./islands/island_default.csv");
+        printf("Loading %s...\n", map_filename);
+        return map_filename;
+    }
+    else if(input_load_map>0 && input_load_map<=count){
+        char* map_folder = "islands/";
+        char* map_filename = malloc(strlen(map_folder)+strlen(dirs[input_load_map]->d_name)+1);
+        strcpy(map_filename, map_folder);
+        strcat(map_filename, dirs[input_load_map]->d_name);
+        printf("Loading %s...\n", map_filename);
+        return map_filename;
+    }
+    else{
+        printf("Item not found. Please restart and try again.\n");
+        exit(0);
+    }
+}
 
 void initialize_player(_player* player, location** map){
     player->current_x = 2;
