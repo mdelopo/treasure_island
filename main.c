@@ -21,6 +21,17 @@ enum directions {
 
 int main() {
     system("@cls||clear");
+
+    printf("  _______                                         _____       _                    _ \n"
+           " |__   __|                                       |_   _|     | |                  | |\n"
+           "    | | _ __  ___   __ _  ___  _   _  _ __  ___    | |   ___ | |  __ _  _ __    __| |\n"
+           "    | || '__|/ _ \\ / _` |/ __|| | | || '__|/ _ \\   | |  / __|| | / _` || '_ \\  / _` |\n"
+           "    | || |  |  __/| (_| |\\__ \\| |_| || |  |  __/  _| |_ \\__ \\| || (_| || | | || (_| |\n"
+           "    |_||_|   \\___| \\__,_||___/ \\__,_||_|   \\___| |_____||___/|_| \\__,_||_| |_| \\__,_|\n");
+    char intro_text[] = "\n    by Manolis Ntelopoulos AEM:10693 entelopo@ece.auth.gr"
+                        "\n\nPlease read READ_ME.pdf before playing.\n";
+    printf("%s\n", intro_text);
+
     _player player;
     char* map_filename = user_select_map_filename();
     char* elements_filename = user_select_elements_filename();
@@ -49,7 +60,8 @@ int main() {
     scrollok(console_window, TRUE);
     refresh();
     resize_window(console_box, console_window, map_box, map_window, status_box, status_window, map);
-    wprintw(console_window, " Press m to load map\n\n\n Press r to resize terminal\n\n\n Press c to clear map-window\n\n _________________________________\n\n");
+
+    wprintw(console_window, " Press r to resize terminal if needed\n\n _________________________________\n\n");
     wrefresh(console_window);
 
     init_pair(CYAN, COLOR_WHITE, COLOR_CYAN); //1
@@ -66,6 +78,7 @@ int main() {
     print_map_point(map_window, player.current_y, player.current_x, BLACK);
     wrefresh(map_window);
     print_player_status(status_window, &player);
+    action(console_window, map, &player, elements);
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
     while (1) {
@@ -74,7 +87,7 @@ int main() {
             case 'r':
                 resize_window(console_box, console_window, map_box, map_window, status_box, status_window, map);
                 break;
-            case 's':
+/*          case 's':
                 print_player_status(status_window, &player);
                 break;
             case 'c':
@@ -83,7 +96,7 @@ int main() {
                 break;
             case 'm':
                 print_map(map_window, map);
-                break;
+                break; */
             case 'b':
             case KEY_UP:
             case 'n':
@@ -118,10 +131,9 @@ int main() {
                 print_map(map_window, map);
                 print_map_point(map_window, player.current_y, player.current_x, 5);
                 break;
-            case 't':
-                damage(console_window, &player, &elements[0]);
-                print_player_status(status_window, &player);
             default:
+                wprintw(console_window, "\n That key doesn't do anything.\n\n");
+                wrefresh(console_window);
                 break;
         }
         wrefresh(map_window);
