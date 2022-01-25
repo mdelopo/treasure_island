@@ -102,9 +102,11 @@ void print_player_status(WINDOW* status_window, _player* p_player){ /*Η συν�
     wprintw(status_window,"\n\n Inventory:\n");
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if(p_player->inventory[i]->name != NULL) {
-            wprintw(status_window, " %d. %s\n", i+1, p_player->inventory[i]->name);
+            wprintw(status_window, " %d. %s ", i+1, p_player->inventory[i]->name);
         }
-        else wprintw(status_window, "\n");
+        else wprintw(status_window, " ");
     }
+    wprintw(status_window, "\n\n Move with ARROW KEYS or BNAD\n");
+    wprintw(status_window, " B:Borras  N:Notos  A:Anatoli  D:Dysi\n");
     wrefresh(status_window);
 }
