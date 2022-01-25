@@ -1,6 +1,11 @@
-dog;d;d;1.5; ;0;You found a dog in your way. You tried to defend yourself, but it bit you.
-water;w;h;2.5; ;0;You found a spring of water. Water heals you.
-knife;k;i;0;damage_reduction;0.2;You found a knife. It may help you survive in the future.
+dog;d;d;1.5; ;0;You found a pack of wild dogs in your way. You tried to defend yourself, but they bit you.
+wolf;w;d;2.5; ;0;A wolf attacked you! You tried to defend yourself but, it bit you.
+bear;b;d;3; ;0;A bear attacked you! It did you a lot of damage.
+food;f;h;3; ;0;You found food and consumed it to heal.
+apple;a;h;2; ;0;You found some apples. You eat them to regain health.
+water;h;h;1.5; ;0;You found a spring of water. You take care of your wounds. Water heals you.
+knife;k;i;0;damage_reduction;0.1;You found a knife. It may help you survive in the future.
+armour;p;i;0;damage_reduction;0.2;You found a body armour. It will help you survive in the future.
 compass;c;i;0;navigation_accuracy_increase;0.15;You found an old compass. It will help you navigate.
 shark;s;n;0; ;0;You tried to swim in the sea, but a shark attacked you!
 treasure;t;w;0; ;0;You found the treasure!
