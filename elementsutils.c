@@ -61,7 +61,7 @@ element* load_elements_from_file(const char* filename){ /*Η συνάρτηση 
     element *elements = allocate_memory_for_elements(y); /*Εδώ καλώ τη συνάρτηση, ώστε να διαθέσω (δυναμικά) χώρο στη μνήμη για τα structs που περιγράφουν το κάθε element του αρχείου.
  * Η συνάρτηση παίρνει ως όρισμα το πλήθος των elements, δηλαδή τον counter y, ώστε να διαθέσει την ανάλογη μνήμη.*/
 
-    read_elements_from_file(filename, elements); /**/
+    read_elements_from_file(filename, elements); /*Εδώ καλώ τη συνάρτηση που φορτώνει στη μνήμη τα elements από το αρχείο.*/
 
     return elements;
 }
