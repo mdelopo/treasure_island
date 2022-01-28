@@ -8,7 +8,7 @@
 #include <dirent.h>
 
 
-char* user_select_map_filename(){
+char* user_select_map_filename(){ /*Η συνάρτηση αυτή καλείται για να ρωτήσει τον παίκτη ποιο αρχείο-χάρτη να χρησιμοποιήσει το πρόγραμμα. Επιστρέφει το όνομα του αρχείου.*/
     DIR *d;
     struct dirent *dirs[100];
     d = opendir("./islands");
@@ -47,7 +47,7 @@ char* user_select_map_filename(){
         exit(0);
     }
 }
-char* user_select_elements_filename(){
+char* user_select_elements_filename(){/*Η συνάρτηση αυτή καλείται για να ρωτήσει τον παίκτη ποιο αρχείο-στοιχείων να χρησιμοποιήσει το πρόγραμμα. Επιστρέφει το όνομα του αρχείου.*/
     DIR *d;
     struct dirent *dirs[100];
     d = opendir("./elements");
@@ -87,12 +87,12 @@ char* user_select_elements_filename(){
     }
 }
 
-void initialize_player(_player* player, location** map){
+void initialize_player(_player* player, location** map){/*Με αυτή τη συνάρτηση αρχικοποιείται το player-struct*/
     player->current_x = 2;
     player->current_y = 2;
     for(int x = 0; x<map_file_columns; x++){
         for(int y = 0; y<map_file_rows; y++){
-            if(map[y][x].elements[0]=='@'){
+            if(map[y][x].elements[0]=='@'){ /*Εδώ βρίσκει το κελί του χάρτη που έχει το '@' ώστε να θέσει εκεί τις αρχικές συντεταγμένες του παίκτη.*/
                 player->current_x = x;
                 player->current_y = y;
             }
@@ -108,13 +108,15 @@ void initialize_player(_player* player, location** map){
     }
     srand(time(0));
 }
-int probability_1_100(int p){
+int probability_1_100(int p){ /*Η συνάρτηση παίρνει ως όρισμα μία πιθανότητα*% και έπειτα παράγει έναν τυχαίο αριθμό από το 0 εως το 100. Έπειτα συγκρίνει
+ * τους δύο αριθμούς. Επιστρέφει '1' αν ο τυχαίος αριθμός είναι <= του ορίσματος και '0' αν είναι μεγαλύτερος. Έτσι μπορεί να χρησιμοποιηθεί για να βρεθεί αν συνέβη ένα γεγονός
+ * στο παιχνίδι που συμβαίνει με κάποια πιθανότητα. 1-> συνέβη, 0-> δεν συνέβη*/
     int num = rand()%(100+1);
     if (num <= p) return 1;
     else return 0;
 }
 
-int shark_encounter(WINDOW* console_window,  _player* p_player){
+int shark_encounter(WINDOW* console_window,  _player* p_player){ /*Η συνάρτηση καλείται όταν ο παίκτης συναντάει τους καρχαρίες.*/
     int sharks_appetite[3] = {20, 70, 100};
     int result = probability_1_100(sharks_appetite[p_player->shark_counter - 1]);
     if(result == 1){
@@ -122,7 +124,9 @@ int shark_encounter(WINDOW* console_window,  _player* p_player){
         death(console_window, p_player);
     }
 }
-float compass_navigation_accuracy_increase(_player* p_player){
+float compass_navigation_accuracy_increase(_player* p_player){ /*Η συνάρτηση καλείται για να βρεθεί αν ο παίκτης έχει αντικείμενα στην κατοχή του που βελτιώνουν την ακρίβεια του προσανατολισμού του.
+ * Σκανάρει θέση-θέση το inventory του παίκτη και αν υπάρχουν αντικείμενα που έχουν ως inventory_effect το "navigation_accuracy_increase" αυξάνει κατά το "inventory_effect_amount" το
+ * "navigation_accuracy_increase_value", το οποίο είναι ένα float που επιστρέφει η συνάρτηση.*/
     float navigation_accuracy_increase_value = 1;
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if(p_player->inventory[i]!=NULL && strcmp(p_player->inventory[i]->inventory_effect, "navigation_accuracy_increase") == 0){
@@ -133,7 +137,8 @@ float compass_navigation_accuracy_increase(_player* p_player){
     return navigation_accuracy_increase_value;
 }
 
-void movement(_player* p_player, int direction){
+void movement(_player* p_player, int direction){ /*Η συνάρτηση αυτή καλείται όταν ο παίκτης πατάει τα πλήκτρα που αναφέρονται στην κίνησή του. Χρησιμοποιεί την
+ * probability_1_100 με όρισμα την πιθανότητα σωστής κίνησης επί την compass_navigation_accuracy_increase για να βρει την κατεύθυνση κίνησης του παίκτη.*/
     enum directions{UP, RIGHT, DOWN, LEFT};
     int prob_result_accurate = probability_1_100(80*compass_navigation_accuracy_increase(p_player));
     int prob_result_offset_left0_right1 = probability_1_100(50);
@@ -165,14 +170,15 @@ void movement(_player* p_player, int direction){
     }
 }
 
-void action(WINDOW* console_window, location **map, _player* p_player, element* elements){
+void action(WINDOW* console_window, location **map, _player* p_player, element* elements){ /*Η συνάρτηση καλείται όταν ο παίκτης αλλάζει θέσει, βρίσκει το element-struct του στοιχείου
+ * που υπάρχει στη νέα θέση του παίκτη (αν υπάρχει) και έπειτα καλεί την κατάλληλη συνάρτηση damage, heal ή inventory, ανάλογα με το "function" του στοιχείου.*/
     char temp_element_alias = map[p_player->next_y][p_player->next_x].elements[0];
     int i = 0;
-    while (temp_element_alias != elements[i].alias){
+    while (temp_element_alias != elements[i].alias){/*Εδώ βρίσκω το element-struct που αντιστοιχεί στο στοιχείου του αντικειμένου.*/
         i++;
     }
 
-    if (elements[i].alias == 's'){
+    if (elements[i].alias == 's'){ /*Εδώ αν ο παίκτης συναντάει καρχαρίες καλείται η shark_encounter και ο παίκτης επιστρέφει στην προηγούμενή του θέση (αν επιβιώσει).*/
         p_player->shark_counter++;
         wprintw(console_window, "\n %s\n", elements[i].text);
         shark_encounter(console_window, p_player);
@@ -182,17 +188,17 @@ void action(WINDOW* console_window, location **map, _player* p_player, element* 
         p_player->next_x = p_player->current_x;
         p_player->next_y = p_player->current_y;
     }
-    else if (elements[i].function == 'd'){
+    else if (elements[i].function == 'd'){/*Εδώ καλείται η "damage" για τα στοιχεία που έχουν "function" 'd'*/
         damage(console_window, p_player, &elements[i]);
     }
-    else if (elements[i].function == 'h'){
+    else if (elements[i].function == 'h'){/*Εδώ καλείται η "heal" για τα στοιχεία που έχουν "function" 'h'*/
         heal(console_window, p_player, &elements[i]);
     }
-    else if (elements[i].function == 'w'){
+    else if (elements[i].function == 'w'){/*Εδώ καλείται η "win" για τα στοιχεία που έχουν "function" 'w', δηλαδή αν ο παίκτης βρει τον θησαυρό.*/
         wprintw(console_window, "\n %s\n", elements[i].text);
         win(console_window, p_player);
     }
-    else if (elements[i].function == 'i'){
+    else if (elements[i].function == 'i'){/*Εδώ καλείται η "inventory" για τα στοιχεία που έχουν "function" 'i'*/
         inventory(console_window, map, p_player, &elements[i]);
     }
 
@@ -204,15 +210,16 @@ void action(WINDOW* console_window, location **map, _player* p_player, element* 
     }
 }
 
-void inventory(WINDOW* console_window, location **map, _player* p_player, element* p_element){
+void inventory(WINDOW* console_window, location **map, _player* p_player, element* p_element){ /*Η συνάρτηση καλείται όταν βρει ο παίκτης κάποιο αντικείμενο.*/
     wprintw(console_window, "\n %s\n", p_element->text);
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
+    for (int i = 0; i < INVENTORY_SIZE; i++) {/*Εδώ ψάχνει αν ο παίκτης έχει κάποια ελεύθερη θέση στο inventory. Αν έχει τοποθετεί το αντικείμενο εκεί.*/
         if(p_player->inventory[i]->name == NULL) {
             p_player->inventory[i] = p_element;
             map[p_player->next_y][p_player->next_x].elements[0] = '\0';
             return;
         }
     }
+    /*Αν δεν υπάρχει κενή θέση, ρωτάει τον παίκτη αν θέλει να ανταλλάξει κάποιο από τα αντικείμενα που ήδη έχει για το καινούργιο.*/
     wprintw(console_window, "\n Your inventory is full!\n Do you want to switch an item that you already have for the %s?\n Press ESC to skip or ENTER to exchange an item...\n", p_element->name);
     wrefresh(console_window);
     int input = getch();
@@ -233,7 +240,9 @@ void inventory(WINDOW* console_window, location **map, _player* p_player, elemen
     }
 }
 
-float damage_reduction(_player* p_player){
+float damage_reduction(_player* p_player){/*Η συνάρτηση καλείται για να βρεθεί αν ο παίκτης έχει αντικείμενα στην κατοχή του που τον βοηθούν να αμυνθεί.
+ * Σκανάρει θέση-θέση το inventory του παίκτη και αν υπάρχουν αντικείμενα που έχουν ως inventory_effect το "damage_reduction" μειώνει κατά το "inventory_effect_amount" το
+ * "damage_reduction_value", το οποίο είναι ένα float που επιστρέφει η συνάρτηση.*/
     float damage_reduction_value = 1;
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if(p_player->inventory[i]!=NULL && strcmp(p_player->inventory[i]->inventory_effect, "damage_reduction") == 0){
@@ -244,8 +253,9 @@ float damage_reduction(_player* p_player){
     return damage_reduction_value;
 }
 
-void damage(WINDOW* console_window, _player* p_player, element* p_element){
-    p_player->health = p_player->health - p_element->function_amount*damage_reduction(p_player);
+void damage(WINDOW* console_window, _player* p_player, element* p_element){/*Η συνάρτηση καλείται όταν ο παίκτης συναντά κάποιο στοιχείο που του αφαιρεί ζωή.*/
+    p_player->health = p_player->health - p_element->function_amount*damage_reduction(p_player);/*Εδώ καλείται η damage_reduction για να βρεθεί αν ο παίκτης έχει
+ * αντικείμενα που τον βοηθούν να επιβιώσει.*/
     wprintw(console_window, "\n %s\n", p_element->text);
     wrefresh(console_window);
     if(p_player->health <= 0){
@@ -254,20 +264,20 @@ void damage(WINDOW* console_window, _player* p_player, element* p_element){
     }
 }
 
-void heal(WINDOW* console_window, _player* p_player, element* p_element){
+void heal(WINDOW* console_window, _player* p_player, element* p_element){/*Η συνάρτηση καλείται όταν ο παίκτης συναντά κάποιο στοιχείο που του δίνει ζωή.*/
     p_player->health = p_player->health + p_element->function_amount;
     if(p_player->health > 10) p_player->health = 10;
     wprintw(console_window, "\n %s\n", (*p_element).text);
     wrefresh(console_window);
 }
 
-void death(WINDOW* console_window, _player* p_player){
+void death(WINDOW* console_window, _player* p_player){ /*Η συνάρτηση καλείται όταν το health του παίκτη γίνεται <= του μηδενός και όταν τον τρώνε οι καρχαρίες.*/
     wprintw(console_window, "\n\n You died! Better luck next time!\n\n");
     wrefresh(console_window);
     p_player->game_over = true;
 }
 
-void win(WINDOW* console_window, _player* p_player){
+void win(WINDOW* console_window, _player* p_player){ /*Η συνάρτηση καλείται όταν ο παίκτης βρίσκει τον θησαυρό.*/
     wprintw(console_window, "\n You won! Congratulations!\n");
     wrefresh(console_window);
     p_player->game_over = true;
